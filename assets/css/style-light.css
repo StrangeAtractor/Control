@@ -1,0 +1,162 @@
+/* === Light theme overrides (drop-in) ===
+   How to use:
+   1) Keep your existing style.css.
+   2) Include this file AFTER style.css in your <head>:
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="style-light.css">
+   3) Add class="theme-light" to <html> (recommended) or <body>.
+
+   Example:
+     <html class="theme-light">
+*/
+
+/* Scope all overrides under .theme-light to avoid breaking your dark theme */
+html.theme-light {
+  /* Variables: these shadow the ones from style.css */
+  --bg:#ffffff;
+  --panel:#ffffff;
+  --text:#111827;       /* neutral-900 */
+  --muted:#374151;      /* neutral-700 */
+  --brand:#0b5bd3;      /* accessible blue */
+  --brand-800:#1d4ed8;
+  --code-bg:#f6f8fa;    /* GitHub-ish code bg */
+  --border:#e5e7eb;     /* neutral-200 */
+}
+
+/* Base */
+html.theme-light body{
+  background: var(--bg) !important;   /* override gradient */
+  color: var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Header/Footer */
+html.theme-light .site-header,
+html.theme-light .site-footer{
+  background:#fff !important;
+  border-color: var(--border);
+  color: var(--muted);
+}
+
+/* Links */
+html.theme-light a{ color: var(--brand); }
+html.theme-light a:hover{ text-decoration: underline; }
+
+/* Cards & article blocks */
+html.theme-light .card,
+html.theme-light .article{
+  background:#fff !important;
+  border:1px solid var(--border) !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 1px 1px rgba(0,0,0,.02) !important;
+}
+
+/* Text */
+html.theme-light h1, 
+html.theme-light h2, 
+html.theme-light h3,
+html.theme-light p, 
+html.theme-light li{
+  color: var(--text);
+}
+
+/* Code */
+html.theme-light pre,
+html.theme-light code{
+  background: var(--code-bg) !important;
+  border:1px solid var(--border) !important;
+  color:#111827;
+  border-radius:10px;
+}
+html.theme-light code{
+  padding:.15rem .35rem;
+}
+
+/* Tables & images */
+html.theme-light table{ border-collapse:collapse; width:100%; }
+html.theme-light th, 
+html.theme-light td{ border:1px solid var(--border); padding:.6rem .7rem; text-align:left; }
+html.theme-light th{ background:#f9fafb; }
+html.theme-light img{ border:1px solid var(--border); border-radius:10px; }
+
+/* Menús */
+html.theme-light .menu a:hover{ background:#f3f4f6 !important; }
+html.theme-light .menu{ background:#fff; border-color:var(--border); }
+
+/* Buttons */
+html.theme-light .btn{
+  background: var(--brand);
+  color:#fff;
+}
+
+
+/* === Width & layout tweaks (wider content) === */
+html.theme-light{
+  --page-max: 96rem;   /* overall container width (≈1536px) */
+  --measure: 85ch;     /* readable text line length */
+  --gutter: 1rem;      /* side padding */
+}
+
+/* Common container candidates — keep it scoped & safe */
+html.theme-light .container,
+html.theme-light .wrap,
+html.theme-light .site-container,
+html.theme-light .content,
+html.theme-light main{
+  max-width: var(--page-max) !important;
+  margin-left:auto; margin-right:auto;
+  padding-left: var(--gutter); padding-right: var(--gutter);
+}
+
+/* Main reading column */
+html.theme-light .article,
+html.theme-light .prose,
+html.theme-light .post,
+html.theme-light .markdown-body{
+  max-width: var(--measure);
+  margin-left:auto; margin-right:auto;
+}
+
+/* Optional: make a page even wider by adding class="content-wide" to the main block */
+html.theme-light .content-wide{
+  max-width: min(100%, 92ch) !important;
+}
+
+/* Optional: full-bleed utility for wide tables/figures/code.
+   Usage: wrap an element with class="bleed" or add class="bleed" to it. */
+html.theme-light .bleed{
+  width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Slightly larger code blocks for comfort */
+html.theme-light pre{ font-size: 1rem; }
+
+
+/* === Stronger content width overrides === */
+/* Make the reading column noticeably wider by default */
+html.theme-light{
+  --measure: 120ch; /* was 85ch */
+}
+
+/* Ensure inner article blocks don't clamp the width */
+html.theme-light .article,
+html.theme-light .prose,
+html.theme-light .post,
+html.theme-light .markdown-body{
+  max-width: var(--measure) !important;
+  width: auto !important;
+}
+
+/* Optional: full width reading (no clamp). To use, add 'no-measure' to <html> class list */
+html.theme-light.no-measure .article,
+html.theme-light.no-measure .prose,
+html.theme-light.no-measure .post,
+html.theme-light.no-measure .markdown-body{
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* Optional: slightly wider (use 'wider' class on <html>) */
+html.theme-light.wider{ --measure: 120ch; }

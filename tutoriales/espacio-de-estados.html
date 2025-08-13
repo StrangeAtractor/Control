@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html class="theme-light no-measure" lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Motor de CC – Modelado y simulación | Tutoriales de Control</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/style-light.css">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+  <!-- MathJax para renderizar LaTeX -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [["\\(","\\)"]], displayMath: [["\\[","\\]"]] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <!-- === White, readable theme overrides === -->
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#111827;       /* neutral-900 */
+      --muted:#374151;      /* neutral-700 */
+      --subtle:#6b7280;     /* neutral-500 */
+      --link:#0b5bd3;       /* accessible blue */
+      --code-bg:#f6f8fa;    /* GitHub-ish code bg */
+      --border:#e5e7eb;     /* neutral-200 */
+      --focus:#2563eb33;    /* focus ring */
+    }
+
+    html{color-scheme:light;}
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+      line-height:1.65;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .container{max-width:72rem;margin:0 auto;padding:0 1rem;}
+    .article{max-width:72ch;margin:2rem auto 4rem;}
+
+    .site-header{
+      background:#fff;
+      border-bottom:1px solid var(--border);
+      position:sticky; top:0; z-index:10;
+      backdrop-filter:saturate(180%) blur(8px);
+    }
+    .nav{display:flex; align-items:center; gap:1rem; padding:.75rem 0;}
+    .nav .brand{
+      font-weight:700; letter-spacing:.2px;
+      color:var(--text); text-decoration:none;
+    }
+    .menu{list-style:none; display:flex; gap:.25rem; margin:0; padding:0;}
+    .menu a{
+      color:var(--text); text-decoration:none;
+      padding:.5rem .75rem; border-radius:.5rem;
+      display:block;
+    }
+    .menu a:hover{background:#f3f4f6;}
+    .menu a:focus{outline:2px solid var(--focus); outline-offset:2px;}
+
+    h1,h2,h3{line-height:1.25; color:#111827; margin-top:1.5rem;}
+    h1{font-size:clamp(1.8rem, 1.3rem + 1.8vw, 2.4rem); margin-top:2rem;}
+    .lead{font-size:1.125rem; color:var(--muted);}
+
+    p, li{font-size:1.02rem;}
+    li{margin:.25rem 0;}
+
+    a{color:var(--link); text-underline-offset:3px;}
+
+    pre, code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:.95rem;
+    }
+    pre{
+      background:var(--code-bg);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:1rem;
+      overflow:auto;
+      box-shadow:0 1px 0 rgba(0,0,0,.02);
+    }
+    code{
+      background:var(--code-bg);
+      padding:.15rem .35rem;
+      border-radius:.35rem;
+      border:1px solid var(--border);
+    }
+
+    figure{margin:1.5rem auto; text-align:center;}
+    figure img{
+      max-width:100%; height:auto;
+      border:1px solid var(--border);
+      border-radius:10px;
+    }
+    figcaption{color:var(--subtle); font-size:.92rem; margin-top:.5rem;}
+
+    .site-footer{
+      background:#fff;
+      border-top:1px solid var(--border);
+      color:var(--subtle);
+      margin-top:3rem;
+      padding:1rem 0;
+      font-size:.95rem;
+    }
+
+    /* Optional: soften tables (if any) */
+    table{border-collapse:collapse; width:100%; margin:1rem 0;}
+    th, td{border:1px solid var(--border); padding:.6rem .7rem; text-align:left;}
+    th{background:#f9fafb;}
+
+    /* Make images/iframes responsive */
+    img, iframe{max-width:100%; height:auto;}
+  </style>
+<!-- Tema claro tipo GitHub -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/github.min.css">
+<!-- Librería (build completo) -->
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/highlight.min.js"></script>
+<!-- Lenguaje MATLAB -->
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/languages/matlab.min.js"></script>
+<script>hljs.highlightAll();</script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav container">
+      <a class="brand" href="../index.html">Tutoriales de Control</a>
+      <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+      <ul class="menu">
+        <li><a href="espacio-de-estados.html">1. Espacio de Estados</a></li>
+        <li><a href="ecuacion-de-riccati.html">2. Ecuación de Riccati</a></li>
+        <li><a href="lqr.html">3. LQR</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="content-wide">
+    <article class="article">
+      <h1>Motor de CC: modelado, simulación y forma en espacio de estados</h1>
+      <p class="lead">En esta página modelamos un motor de corriente continua (CC), obtenemos su representación en espacio de estados y simulamos sus respuestas a entradas de control y perturbaciones usando MATLAB (Control System Toolbox).</p>
+
+      <h2>Introducción</h2>
+      <p>
+        En esta entrada explicamos cómo modelar un motor de CC y cómo simular su respuesta a entradas de control y perturbaciones utilizando la <em>Control System Toolbox</em> de MATLAB. Obtendremos un modelo en espacio de estados del sistema. Este modelo se usa en otras lecciones para demostrar principios y algoritmos básicos de control. Esta entrada se basa en el Capítulo 4 de <em>Feedback Control of Dynamic Systems (third edition)</em> de Franklin, Powell y Emami-Naeini. Un video de YouTube que acompaña esta entrada puede añadirse aquí si lo deseas.
+      </p>
+      <p>
+        Aquí no discutiremos el principio de funcionamiento de los motores de CC. Supondremos que el lector tiene un entendimiento básico de las leyes físicas principales que gobiernan el comportamiento de dichos motores. Para una introducción agradable a los motores de CC, puedes consultar, por ejemplo, una página web introductoria. La Figura&nbsp;1(a) muestra un circuito eléctrico básico de un motor de CC. La Figura&nbsp;1(b) muestra el diagrama de cuerpo libre del rotor.
+      </p>
+
+      <figure>
+        <img src="../assets/img/dc_motor_circuit.png" alt="(a) Circuito eléctrico básico de un motor de CC y (b) diagrama de cuerpo libre del rotor" />
+        <figcaption>Figura 1: (a) circuito eléctrico básico de un motor de CC y (b) diagrama de cuerpo libre del rotor.</figcaption>
+      </figure>
+
+      <h2>Dinámica del motor</h2>
+      <p>Una ecuación básica que gobierna la dinámica mecánica del motor es:</p>
+      <p><strong>(1)</strong> \[ J\,\ddot{\theta} = T - w - d \]</p>
+      <p>
+        donde \(J\) es la inercia del rotor, \(\theta\) es el ángulo de giro del eje de salida, \(T\) es el par mecánico desarrollado en el rotor, \(w\) es un par de perturbación y \(d\) es un par de amortiguamiento.
+        A partir de la ley del motor, tenemos:
+      </p>
+      <p><strong>(2)</strong> \[ T = K_T\, i \]</p>
+      <p>
+        donde \(i\) es la corriente de armadura y \(K_T\) es la constante de par. Es decir, el par generado es proporcional a la corriente de armadura. Por otro lado, el par de amortiguamiento puede expresarse como:
+      </p>
+      <p><strong>(3)</strong> \[ d = b\, \dot{\theta} \]</p>
+      <p>
+        donde \(b\) es un coeficiente de amortiguamiento. Sustituyendo (2) y (3) en (1), obtenemos:
+      </p>
+      <p><strong>(4)</strong> \[ J\,\ddot{\theta} + b\,\dot{\theta} = K_T\, i - w \]</p>
+      <p>
+        La corriente de armadura tiene su propia dinámica. De la Figura&nbsp;1(a), podemos escribir:
+      </p>
+      <p><strong>(5)</strong> \[ L\,\dot{i} + R\, i = v - e_m \]</p>
+      <p>
+        donde \(e_m\) es la fuerza contraelectromotriz (f.c.e.m.) dada por:
+      </p>
+      <p><strong>(6)</strong> \[ e_m = K_e\, \dot{\theta} \]</p>
+      <p>
+        Al sustituir (6) en (5), se obtiene:
+      </p>
+      <p><strong>(7)</strong> \[ L\,\dot{i} + R\, i = v - K_e\, \dot{\theta} \]</p>
+      <p>
+        Las ecuaciones (4) y (7) gobiernan la dinámica del motor de CC; por claridad, las escribimos juntas:
+      </p>
+      <p><strong>(8)</strong> \[ J\,\ddot{\theta} + b\,\dot{\theta} = K_T\, i - w \]</p>
+      <p><strong>(9)</strong> \[ L\,\dot{i} + R\, i = v - K_e\, \dot{\theta} \]</p>
+      <p>
+        El voltaje \(v\) es un voltaje externo usado para controlar el motor.
+      </p>
+
+      <h2>Modelo en espacio de estados</h2>
+      <p>Buscamos escribir (8) y (9) en forma de espacio de estados:</p>
+      <p><strong>(10)</strong> \[ \dot{\mathbf{x}} = A\, \mathbf{x} + B\, u + W\, d, \qquad y = C\, \mathbf{x} \]</p>
+      <p>
+        donde \( \mathbf{x} = [\, x_1\; x_2\; x_3 \,]^T \) es el vector de estado, \(u\) es la entrada de control (escalar en este ejemplo), \(y\) es la salida del sistema (escalar), y \(A,B,C,W\) son matrices del sistema.
+      </p>
+      <p>Introducimos variables de estado, entrada y salida como:</p>
+      <p><strong>(11)</strong>
+        \[
+          x_1 = \theta,\quad x_2 = \dot{\theta},\quad x_3 = i,\quad y = x_2,\quad u = v.
+        \]
+      </p>
+      <p>
+        Comentarios: necesitamos 3 variables de estado porque el orden total del sistema es 3. ¿Cómo se determina el orden total? Es la suma de los órdenes de las dos ecuaciones diferenciales: la primera (8) es de orden 2 (la derivada más alta es \(\ddot{\theta}\)) y la segunda (9) es de orden 1. La salida es de libre elección, pero debe corresponder a lo que podemos medir en la práctica. Aquí elegimos la velocidad angular \(\dot{\theta}\). La entrada de control \(u\) es el voltaje externo \(v\).
+      </p>
+      <p>Usando (8), (9) y (11), se obtiene:</p>
+      <p><strong>(12)</strong>
+        \[
+        \begin{aligned}
+          &\dot{x}_1 = x_2,\\
+          &\dot{x}_2 = \ddot{\theta} = \tfrac{K_T}{J} x_3 - \tfrac{1}{J} d - \tfrac{b}{J} x_2,\\
+          &\dot{x}_3 = \dot{i} = \tfrac{1}{L} u - \tfrac{R}{L} x_3 - \tfrac{K_e}{L} x_2,\\
+          &y = \begin{bmatrix} 0 & 1 & 0 \end{bmatrix}\begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix}.
+        \end{aligned}
+        \]
+      </p>
+      <p>Estas ecuaciones pueden escribirse en forma matricial de espacio de estados:</p>
+      <p><strong>(13)</strong>
+        \[
+        \underbrace{\begin{bmatrix}\dot{x}_1\\\dot{x}_2\\\dot{x}_3\end{bmatrix}}_{\dot{\mathbf{x}}}
+        =
+        \underbrace{\begin{bmatrix}
+          0 & 1 & 0 \\
+          0 & -\tfrac{b}{J} & \tfrac{K_T}{J} \\
+          0 & -\tfrac{K_e}{L} & -\tfrac{R}{L}
+        \end{bmatrix}}_{A}
+        \underbrace{\begin{bmatrix}x_1\\x_2\\x_3\end{bmatrix}}_{\mathbf{x}}
+        + \underbrace{\begin{bmatrix}0\\0\\\tfrac{1}{L}\end{bmatrix}}_{B} u
+        + \underbrace{\begin{bmatrix}0\\-\tfrac{1}{J}\\0\end{bmatrix}}_{W} d,\quad
+        y = \underbrace{\begin{bmatrix}0 & 1 & 0\end{bmatrix}}_{C}\, \mathbf{x}.
+        \]
+      </p>
+
+      <h2>Código MATLAB</h2>
+      <p>A continuación, presentamos el código para simular el modelo en espacio de estados. Primero definimos el modelo.</p>
+      <pre><code class="language-matlab">clear,pack,clc
+ 
+% define the constants
+J=0.1
+b=0.5
+Kt=1
+L=1
+R=5
+Ke=1
+L=1
+ 
+% define the system matrices
+A=[0 1 0; 0 -b/J Kt/J; 0 -Ke/L -R/L]
+B=[0; 0; 1/L]
+W=[0; -1/J; 0]
+C=[0 1 0]
+ 
+% combine the control input and disturbance matrices in a single matrix
+Btotal=[B W]
+ 
+% define the state-space model
+sys = ss(A,Btotal,C,[])
+ 
+% discretization constant
+dt = 0.01;
+% final simulation time
+Tfinal= 5;
+% discretized time
+discretization_time = 0:dt:Tfinal;</code></pre>
+      <p>
+        Algunas notas: en las líneas 13–16 se definen las matrices del sistema. En la línea 19 se concatenan las matrices de entrada de control y de perturbación (para simular ambas). En la línea 22 se construye el sistema en espacio de estados con <code>ss()</code>. Las líneas 24–29 fijan el paso de discretización, el tiempo final de simulación y el vector de tiempos <code>discretization_time</code>.
+      </p>
+
+      <h3>Respuesta a una entrada escalón</h3>
+      <pre><code class="language-matlab">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% system response to the step control input 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+% control input
+figure(1)
+control_step = ones(size(discretization_time))';
+plot(discretization_time,control_step,'LineWidth',2)
+xlabel('Time')
+ylabel('Control input (voltage)')
+title('Control Input Used for Simulation')
+ 
+% disturbance 
+disturbance = zeros(size(discretization_time))';
+ 
+% control input and disturbance
+U_step=[control_step, disturbance];
+ 
+% simulate the system
+Ycontrol_step=lsim(sys,U_step,discretization_time);
+ 
+% plot the system output 
+figure(2)
+plot(discretization_time,Ycontrol_step,'LineWidth',2)
+xlabel('Time')
+ylabel('System output (angular velocity)')
+title('System response to the step control input')</code></pre>
+      <p>
+        En la línea 7 se genera la señal de entrada escalón. En la línea 14 se define una perturbación nula (suponemos que el par de perturbación \(w\) no actúa durante esta simulación). En la línea 17 se agrupan las señales de control y perturbación (recuerda que el modelo tiene dos entradas). En la línea 20 se simula el sistema con <code>lsim()</code>, cuyo resultado <code>Ycontrol_step</code> es la salida del sistema evaluada en los instantes <code>discretization_time</code>.
+      </p>
+      <figure>
+        <img src="../assets/img/dc_step_input.png" alt="Entrada escalón" />
+        <img src="../assets/img/dc_step_response.png" alt="Respuesta a escalón" />
+        <figcaption>Figura 2: (a) entrada de control tipo escalón y (b) respuesta del sistema.</figcaption>
+      </figure>
+      <p>De la Figura 2 se observa que la respuesta a escalón está fuertemente amortiguada.</p>
+
+      <h3>Respuesta a una entrada senoidal</h3>
+      <pre><code class="language-matlab">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% system response to the sinusoidal control input 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+% control input
+figure(3)
+control_sin = (4+sin(5*discretization_time))';
+plot(discretization_time,control_sin,'LineWidth',2)
+xlabel('Time')
+ylabel('Control input (voltage)')
+title('Control Input Used for Simulation')
+ 
+% disturbance 
+disturbance = zeros(size(discretization_time))';
+ 
+% control input and disturbance
+U_sin=[control_sin, disturbance];
+ 
+% simulate the system
+Ycontrol_sin=lsim(sys,U_sin,discretization_time);
+ 
+% plot the system output 
+figure(4)
+plot(discretization_time,Ycontrol_sin,'LineWidth',2)
+xlabel('Time')
+ylabel('System output (angular velocity)')
+title('System response to the sinusoidal control input')</code></pre>
+      <figure>
+        <img src="../assets/img/dc_sine_input.png" alt="Entrada senoidal" />
+        <img src="../assets/img/dc_sine_response.png" alt="Respuesta a senoidal" />
+        <figcaption>Figura 3: (a) entrada de control senoidal y (b) respuesta del sistema.</figcaption>
+      </figure>
+      <p>La Figura 3 muestra que el sistema es capaz de seguir (rastrear) la señal senoidal de entrada en régimen apropiado.</p>
+
+      <h3>Respuesta a condiciones iniciales no nulas</h3>
+      <p>Ahora simulamos la respuesta a condiciones iniciales no nulas, con \(u = 0\) y \(w = 0\). Usamos \(\mathbf{x}(0)= [\,1\;1\;1\,]^T\).</p>
+      <pre><code class="language-matlab">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% system response to non zero inital conditions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+X0=[1; 1; 1];
+Yinitial=initial(sys,X0,discretization_time);
+% plot the system output 
+figure(5)
+plot(discretization_time,Yinitial,'LineWidth',2)
+xlabel('Time')
+ylabel('System output (angular velocity)')
+title('System response to the initial condition')</code></pre>
+      <figure>
+        <img src="../assets/img/dc_initial_response.png" alt="Respuesta a condición inicial" />
+        <figcaption>Figura 4: respuesta del sistema ante condiciones iniciales no nulas.</figcaption>
+      </figure>
+
+      <p><a href="../index.html">← Volver al inicio</a></p>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2025 – Tutoriales de Control.</p>
+    </div>
+  </footer>
+
+  <script src="../assets/js/main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

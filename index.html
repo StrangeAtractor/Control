@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tutoriales de Control</title>
+  <meta name="description" content="Seguimiento de tutoriales de control: espacio de estados, ecuación de Riccati, LQR, y más." />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav container">
+      <a class="brand" href="index.html">Tutoriales de Control</a>
+      <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+      <ul class="menu">
+        <li><a href="tutoriales/espacio-de-estados.html">1. Espacio de Estados</a></li>
+        <li><a href="tutoriales/ecuacion-de-riccati.html">2. Ecuación de Riccati</a></li>
+        <li><a href="tutoriales/lqr.html">3. LQR</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Seguimiento de tutoriales de control</h1>
+      <p>Apuntes personales con código MATLAB y gráficas.</p>
+    </section>
+
+    <section class="cards">
+      <article class="card">
+        <h2>1. Diseño en espacio de estados</h2>
+        <p>Modelado, matrices A, B, C, D, solución con exponencial de matriz, controlabilidad y observabilidad.</p>
+        <a class="btn" href="tutoriales/espacio-de-estados.html">Abrir</a>
+      </article>
+
+      <article class="card">
+        <h2>2. Ecuación de Riccati</h2>
+        <p>Riccati algebraica/ diferencial, condiciones y ejemplos prácticos.</p>
+        <a class="btn" href="tutoriales/ecuacion-de-riccati.html">Abrir</a>
+      </article>
+
+      <article class="card">
+        <h2>3. LQR</h2>
+        <p>Selección de Q y R, solución de Riccati, ganancia K y simulaciones.</p>
+        <a class="btn" href="tutoriales/lqr.html">Abrir</a>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2025 – Tutoriales de Control. Construido con HTML estático y <a href="https://highlightjs.org/" target="_blank" rel="noopener">highlight.js</a>.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</body>
+</html>

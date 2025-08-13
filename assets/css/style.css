@@ -1,0 +1,91 @@
+/* === Estilos base === */
+:root{
+  --bg:#0b0e14;
+  --panel:#11151f;
+  --text:#e6e6e6;
+  --muted:#9aa4b2;
+  --brand:#34d399;
+  --brand-800:#059669;
+  --code-bg:#0f172a;
+  --border:#1f2937;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  line-height:1.6;
+  color:var(--text);
+  background:linear-gradient(180deg, #0b0e14, #0b0e14 70%, #0d1117);
+}
+
+a{color:var(--brand); text-decoration:none}
+a:hover{text-decoration:underline}
+
+.container{max-width:1100px;margin:0 auto;padding:1rem}
+
+.site-header{
+  position:sticky; top:0; z-index:1000;
+  background:rgba(11,14,20,.9); backdrop-filter:saturate(180%) blur(6px);
+  border-bottom:1px solid var(--border);
+}
+
+.nav{display:flex; align-items:center; gap:1rem}
+.brand{font-weight:800; letter-spacing:.3px; color:var(--text)}
+.menu{margin-left:auto; display:flex; gap:.8rem; list-style:none; padding:0}
+.menu a{display:block; padding:.6rem .8rem; border-radius:.6rem}
+.menu a:hover{background:var(--panel)}
+.menu-toggle{display:none; margin-left:auto; font-size:1.2rem; background:transparent; color:var(--text); border:1px solid var(--border); border-radius:.5rem; padding:.35rem .5rem; cursor:pointer}
+
+.hero{padding:2rem 0 1rem}
+.hero h1{font-size:clamp(1.6rem, 2.8vw, 2.4rem); margin:.2rem 0}
+.hero p{color:var(--muted)}
+
+.cards{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap:1rem;
+  padding-bottom:2rem;
+}
+
+.card{
+  background:linear-gradient(180deg, #0f1320, #0d1117);
+  border:1px solid var(--border);
+  border-radius:1rem; padding:1rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+.card h2{margin-top:0}
+.btn{
+  display:inline-block; margin-top:.5rem;
+  background:var(--brand); color:#0b0e14; font-weight:700;
+  padding:.55rem .9rem; border-radius:.6rem; transition:transform .05s ease-in-out;
+}
+.btn:hover{transform:translateY(-1px); text-decoration:none}
+
+.site-footer{border-top:1px solid var(--border); margin-top:2rem}
+.site-footer p{color:var(--muted); font-size:.95rem}
+
+/* Contenido de tutorial */
+.article{
+  background:linear-gradient(180deg, #0f1320, #0d1117);
+  border:1px solid var(--border);
+  border-radius:1rem; padding:1.2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+.article h1{margin-top:.2rem}
+.article h2{margin-top:1.3rem; border-bottom:1px solid var(--border); padding-bottom:.3rem}
+.article img{max-width:100%; height:auto; border-radius:.6rem; border:1px solid var(--border)}
+
+/* Código */
+pre{
+  background:var(--code-bg);
+  border:1px solid var(--border);
+  padding:1rem; border-radius:.6rem; overflow:auto;
+}
+
+/* Responsive */
+@media (max-width: 800px){
+  .menu{display:none; position:absolute; right:1rem; top:3.2rem; background:#0b0e14; border:1px solid var(--border); border-radius:.6rem; padding:.4rem; flex-direction:column; width:min(85vw, 320px)}
+  .menu.open{display:flex}
+  .menu-toggle{display:block}
+}
